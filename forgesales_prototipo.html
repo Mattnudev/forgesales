@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ForgeSales | Plataforma de gestión comercial industrial</title>
+<style>
+:root{
+  --bg:#0b1118;--panel:#121c27;--panel2:#172331;--line:#263545;
+  --text:#edf3f8;--muted:#91a3b5;--blue:#54a8ff;--cyan:#62ded0;
+  --green:#6de0a3;--yellow:#f4c66b;--red:#ff8c8c;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+button,input,select{font:inherit}
+button{cursor:pointer}
+.app{display:grid;grid-template-columns:248px minmax(0,1fr);min-height:100vh}
+.sidebar{background:#0e1721;border-right:1px solid var(--line);padding:24px 16px;display:flex;flex-direction:column;gap:26px}
+.brand{display:flex;gap:11px;align-items:center;padding:0 8px}
+.logo{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#54a8ff,#62ded0);display:grid;place-items:center;color:#07131c;font-weight:900;font-size:19px}
+.brand strong{display:block;font-size:17px;letter-spacing:.2px}.brand small{color:var(--muted);font-size:11px}
+.nav-label{color:#667b8f;text-transform:uppercase;letter-spacing:1.5px;font-size:10px;padding:0 12px;margin-bottom:8px}
+.nav{display:flex;flex-direction:column;gap:5px}
+.nav button{border:0;background:transparent;color:#a9bac9;text-align:left;padding:11px 12px;border-radius:9px;display:flex;gap:12px;align-items:center}
+.nav button:hover,.nav button.active{background:#1a2b3c;color:#fff}.nav button.active{box-shadow:inset 3px 0 var(--blue)}
+.nav .ico{width:18px;text-align:center;font-size:16px}
+.sidebar-bottom{margin-top:auto;border:1px solid var(--line);border-radius:12px;padding:13px;background:#121e2a}
+.sidebar-bottom small{color:var(--muted)}
+.profile{display:flex;align-items:center;gap:9px;margin-top:12px}
+.avatar{width:31px;height:31px;border-radius:50%;display:grid;place-items:center;background:#264b67;color:#d9f0ff;font-weight:700}
+main{min-width:0}
+.topbar{height:76px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 32px;gap:20px}
+.crumb{color:var(--muted);font-size:12px}.crumb b{color:var(--text);font-weight:600}
+.top-actions{display:flex;align-items:center;gap:10px}
+.pill{border:1px solid var(--line);border-radius:999px;padding:7px 11px;color:#b7c6d4;font-size:12px}
+.content{padding:28px 32px 42px;max-width:1500px;margin:auto}
+.page{display:none}.page.active{display:block}
+.heading{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:24px}
+.eyebrow{color:var(--cyan);font-size:11px;text-transform:uppercase;letter-spacing:1.5px;font-weight:700}
+h1{font-size:28px;letter-spacing:-.7px;margin:5px 0 5px;line-height:1.2}
+h2{font-size:16px;margin:0 0 5px}p{margin:0;color:var(--muted)}
+.btn{border:1px solid var(--line);background:#1a2938;color:var(--text);padding:10px 14px;border-radius:9px;font-weight:600}
+.btn.primary{background:var(--blue);border-color:var(--blue);color:#071522}
+.btn:hover{filter:brightness(1.08)}
+.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:18px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;min-width:0}
+.metric-top{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:12px}
+.metric-icon{width:30px;height:30px;display:grid;place-items:center;background:#1d3041;border-radius:9px;color:var(--blue);font-size:16px}
+.metric-value{font-size:26px;font-weight:750;letter-spacing:-.7px;margin:12px 0 4px}
+.trend{font-size:11px;color:var(--green)}.trend span{color:var(--muted)}
+.grid-main{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(290px,1fr);gap:16px;margin-bottom:16px}
+.card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:18px}
+.card-head p{font-size:12px}
+.select{background:#101a25;color:#cbd7e2;border:1px solid var(--line);border-radius:8px;padding:8px}
+.chart-legend{display:flex;gap:14px;font-size:11px;color:var(--muted)}
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px}
+.chart{height:205px;width:100%;display:block}
+.chart text{font-family:inherit;fill:#71869a;font-size:10px}
+.chart .gridline{stroke:#253443;stroke-dasharray:3 5}
+.chart .area{fill:url(#areaFill)}
+.chart .line{fill:none;stroke:var(--blue);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.chart .line2{fill:none;stroke:var(--cyan);stroke-width:2;stroke-dasharray:5 5}
+.progress-row{margin:17px 0}
+.progress-label{display:flex;justify-content:space-between;font-size:12px;margin-bottom:7px}
+.progress-label span:last-child{color:#cbd7e2;font-weight:650}
+.progress{height:7px;background:#263545;border-radius:9px;overflow:hidden}.progress span{height:100%;display:block;border-radius:9px}
+.activity{display:flex;flex-direction:column;gap:15px}
+.activity-item{display:flex;gap:11px;align-items:flex-start}
+.activity-symbol{width:32px;height:32px;border-radius:10px;background:#1b2b3b;display:grid;place-items:center;flex-shrink:0}
+.activity-item strong{display:block;font-size:12px}.activity-item small{color:var(--muted);font-size:11px}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;white-space:nowrap}
+th{text-align:left;color:#8296a9;font-size:10px;text-transform:uppercase;letter-spacing:.8px;font-weight:600;padding:11px 10px;border-bottom:1px solid var(--line)}
+td{padding:13px 10px;border-bottom:1px solid #202f3e;font-size:12px}
+tbody tr:last-child td{border-bottom:0}
+.product{display:flex;align-items:center;gap:10px}
+.product-icon{width:34px;height:34px;border-radius:9px;background:#1c2c3a;display:grid;place-items:center}
+.product strong{display:block}.product small{display:block;color:var(--muted);font-size:10px}
+.status{display:inline-flex;align-items:center;gap:5px;border-radius:99px;padding:5px 8px;font-size:10px;background:#19382e;color:var(--green)}
+.status.warn{background:#3c3020;color:var(--yellow)}.status.blue{background:#1b3044;color:#83c5ff}.status.red{background:#412829;color:var(--red)}
+.two-col{display:grid;grid-template-columns:minmax(0,1fr) minmax(290px,.8fr);gap:16px}
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.field label{font-size:12px;color:#b8c7d4}
+.field input,.field select,.field textarea{background:#0e1822;border:1px solid var(--line);border-radius:9px;padding:11px;color:var(--text);width:100%;outline:none}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--blue)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.result-box{background:#0e1923;border:1px solid var(--line);border-radius:12px;padding:16px;margin:15px 0}
+.result-line{display:flex;justify-content:space-between;gap:10px;margin:9px 0;font-size:12px;color:var(--muted)}
+.result-line strong{color:var(--text)}
+.callout{border:1px solid #31516b;background:#142638;padding:13px;border-radius:10px;color:#b8dfff;font-size:12px}
+.chat{display:flex;flex-direction:column;gap:12px;min-height:330px}
+.bubble{max-width:88%;padding:12px 14px;border-radius:12px;font-size:13px}
+.bubble.client{background:#1b2b3a;border:1px solid #2b3e50;align-self:flex-start}
+.bubble.seller{background:#173a38;border:1px solid #285b55;align-self:flex-end}
+.bubble small{display:block;color:#91a6b9;font-size:10px;margin-bottom:5px}
+.chat-input{display:flex;gap:8px;margin-top:15px}
+.chat-input input{flex:1;min-width:0;background:#0e1822;border:1px solid var(--line);border-radius:9px;padding:12px;color:var(--text)}
+.score-row{display:flex;align-items:center;gap:10px;margin:14px 0}
+.score-row span:first-child{width:140px;color:var(--muted);font-size:12px}
+.score-track{flex:1;height:6px;background:#263545;border-radius:10px;overflow:hidden}.score-track i{height:100%;display:block;background:var(--cyan)}
+.score-row b{width:30px;text-align:right;font-size:11px}
+.footer-note{font-size:11px;color:#70869a;margin-top:18px}
+.toast{position:fixed;right:22px;bottom:22px;background:#19382e;border:1px solid #2b7658;color:#c8ffe1;padding:12px 16px;border-radius:10px;display:none;z-index:10;box-shadow:0 10px 35px #0005}
+@media(max-width:1050px){.app{grid-template-columns:210px minmax(0,1fr)}.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.grid-main,.two-col{grid-template-columns:1fr}.content{padding:24px 20px}}
+@media(max-width:700px){.app{display:block}.sidebar{padding:12px;gap:12px;border-right:0;border-bottom:1px solid var(--line)}.brand{padding:4px}.nav{display:grid;grid-template-columns:repeat(3,1fr)}.nav-label,.sidebar-bottom{display:none}.nav button{font-size:11px;padding:9px 6px;justify-content:center;flex-direction:column;gap:3px}.topbar{height:58px;padding:0 16px}.content{padding:22px 14px}.heading{flex-direction:column}h1{font-size:24px}.metrics{gap:9px}.card{padding:14px}.metric-value{font-size:22px}.form-grid{grid-template-columns:1fr}.top-actions .pill{display:none}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="logo">F</div><div><strong>ForgeSales</strong><small>Industrial Sales Intelligence</small></div></div>
+    <div><div class="nav-label">Espacio de trabajo</div><nav class="nav">
+      <button class="active" data-page="dashboard"><span class="ico">▦</span>Dashboard</button>
+      <button data-page="productos"><span class="ico">◇</span>Productos y precios</button>
+      <button data-page="negociacion"><span class="ico">⇄</span>Simulador de precios</button>
+      <button data-page="ventas"><span class="ico">▤</span>Ventas y cotizaciones</button>
+      <button data-page="entrenamiento"><span class="ico">◉</span>Entrenamiento IA</button>
+      <button data-page="kpi"><span class="ico">↗</span>KPI y rendimiento</button>
+    </nav></div>
+    <div class="sidebar-bottom">
+      <small>ESPACIO DEMO</small>
+      <div class="profile"><div class="avatar">AD</div><div><strong style="font-size:12px">Administrador</strong><small style="display:block">Vista de demostración</small></div></div>
+    </div>
+  </aside>
+  <main>
+    <header class="topbar"><div class="crumb">ForgeSales <span style="color:#52677a"> / </span> <b id="crumb">Dashboard</b></div><div class="top-actions"><span class="pill">● Datos de demostración</span><button class="btn" onclick="notify('Prototipo demostrativo: no hay una cuenta real conectada.')">Ayuda</button></div></header>
+    <div class="content">
+      <section class="page active" id="dashboard">
+        <div class="heading"><div><div class="eyebrow">Vista general · Comercial</div><h1>Panel de gestión comercial</h1><p>Una visión clara de ventas, márgenes y oportunidades del equipo.</p></div><button class="btn primary" onclick="showPage('ventas')">＋ Registrar venta</button></div>
+        <div class="metrics">
+          <div class="card"><div class="metric-top">Ventas del mes <span class="metric-icon">$</span></div><div class="metric-value">$48,6 MM</div><div class="trend">↑ 12,8% <span>vs. período anterior</span></div></div>
+          <div class="card"><div class="metric-top">Margen bruto <span class="metric-icon">◈</span></div><div class="metric-value">27,4%</div><div class="trend">↑ 2,1 pp <span>vs. período anterior</span></div></div>
+          <div class="card"><div class="metric-top">Conversión cotizaciones <span class="metric-icon">↗</span></div><div class="metric-value">34,8%</div><div class="trend">↑ 4,2 pp <span>vs. período anterior</span></div></div>
+          <div class="card"><div class="metric-top">Cotizaciones abiertas <span class="metric-icon">▤</span></div><div class="metric-value">26</div><div style="font-size:11px;color:var(--muted)">8 requieren seguimiento</div></div>
+        </div>
+        <div class="grid-main">
+          <div class="card"><div class="card-head"><div><h2>Ventas y objetivo</h2><p>Facturación mensual ilustrativa</p></div><select class="select" aria-label="Período"><option>Últimos 6 meses</option><option>Últimos 30 días</option><option>Este año</option></select></div>
+            <div class="chart-legend"><span><i class="dot" style="background:var(--blue)"></i>Ventas reales</span><span><i class="dot" style="background:var(--cyan)"></i>Objetivo</span></div>
+            <svg class="chart" viewBox="0 0 650 230" preserveAspectRatio="none" role="img" aria-label="Gráfico de ventas mensuales"><defs><linearGradient id="areaFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#54a8ff" stop-opacity=".25"/><stop offset="100%" stop-color="#54a8ff" stop-opacity="0"/></linearGradient></defs>
+              <line class="gridline" x1="42" y1="30" x2="635" y2="30"/><line class="gridline" x1="42" y1="75" x2="635" y2="75"/><line class="gridline" x1="42" y1="120" x2="635" y2="120"/><line class="gridline" x1="42" y1="165" x2="635" y2="165"/><line class="gridline" x1="42" y1="205" x2="635" y2="205"/>
+              <text x="4" y="34">$60M</text><text x="4" y="79">$45M</text><text x="4" y="124">$30M</text><text x="4" y="169">$15M</text><text x="18" y="209">$0</text>
+              <path class="area" d="M55 143 L165 112 L275 127 L385 78 L495 91 L610 48 L610 205 L55 205 Z"/>
+              <path class="line2" d="M55 100 L165 94 L275 86 L385 78 L495 69 L610 60"/>
+              <path class="line" d="M55 143 L165 112 L275 127 L385 78 L495 91 L610 48"/>
+              <circle cx="610" cy="48" r="4" fill="#54a8ff"/><text x="55" y="224" text-anchor="middle">May</text><text x="165" y="224" text-anchor="middle">Jun</text><text x="275" y="224" text-anchor="middle">Jul</text><text x="385" y="224" text-anchor="middle">Ago</text><text x="495" y="224" text-anchor="middle">Sep</text><text x="610" y="224" text-anchor="middle">Oct</text>
+            </svg>
+          </div>
+          <div class="card"><div class="card-head"><div><h2>Rendimiento del equipo</h2><p>Avance hacia el objetivo mensual</p></div><span class="pill">4 vendedores</span></div>
+            <div class="progress-row"><div class="progress-label"><span>Camila R.</span><span>86%</span></div><div class="progress"><span style="width:86%;background:var(--blue)"></span></div></div>
+            <div class="progress-row"><div class="progress-label"><span>Diego M.</span><span>72%</span></div><div class="progress"><span style="width:72%;background:var(--cyan)"></span></div></div>
+            <div class="progress-row"><div class="progress-label"><span>Andrés P.</span><span>64%</span></div><div class="progress"><span style="width:64%;background:#b99bff"></span></div></div>
+            <div class="progress-row"><div class="progress-label"><span>Valentina S.</span><span>49%</span></div><div class="progress"><span style="width:49%;background:var(--yellow)"></span></div></div>
+            <div class="callout" style="margin-top:20px">✦ <b>Oportunidad:</b> hay 8 cotizaciones abiertas que necesitan seguimiento comercial.</div>
+          </div>
+        </div>
+        <div class="grid-main">
+          <div class="card"><div class="card-head"><div><h2>Últimas cotizaciones</h2><p>Actividad comercial reciente</p></div><button class="btn" onclick="showPage('ventas')">Ver todas</button></div>
+            <div class="table-wrap"><table><thead><tr><th>Cliente</th><th>Vendedor</th><th>Monto</th><th>Estado</th></tr></thead><tbody>
+              <tr><td>Minera Los Andes</td><td>Camila R.</td><td>$4.850.000</td><td><span class="status warn">En negociación</span></td></tr>
+              <tr><td>Mantenciones del Norte</td><td>Diego M.</td><td>$2.120.000</td><td><span class="status blue">Seguimiento</span></td></tr>
+              <tr><td>Industrias Cordillera</td><td>Andrés P.</td><td>$980.000</td><td><span class="status">Ganada</span></td></tr>
+              <tr><td>Servicios Mineros Sur</td><td>Valentina S.</td><td>$3.400.000</td><td><span class="status red">Por revisar</span></td></tr>
+            </tbody></table></div>
+          </div>
+          <div class="card"><div class="card-head"><div><h2>Actividad reciente</h2><p>Eventos del equipo</p></div></div><div class="activity">
+            <div class="activity-item"><div class="activity-symbol">✓</div><div><strong>Cotización marcada como ganada</strong><small>Industrias Cordillera · Hace 25 min</small></div></div>
+            <div class="activity-item"><div class="activity-symbol">↻</div><div><strong>Seguimiento pendiente</strong><small>Minera Los Andes · Hace 1 h</small></div></div>
+            <div class="activity-item"><div class="activity-symbol">◉</div><div><strong>Entrenamiento completado</strong><small>Diego M. · Manejo de objeciones</small></div></div>
+            <div class="activity-item"><div class="activity-symbol">◇</div><div><strong>Precio actualizado</strong><small>Catálogo industrial · Hoy</small></div></div>
+          </div></div>
+        </div>
+        <div class="footer-note">Prototipo conceptual · Todos los nombres, precios, cifras y resultados son ficticios.</div>
+      </section>
+
+      <section class="page" id="productos">
+        <div class="heading"><div><div class="eyebrow">Base comercial</div><h1>Productos y precios</h1><p>Catálogo centralizado para cotizar con información confiable.</p></div><button class="btn primary" onclick="document.getElementById('productForm').scrollIntoView({behavior:'smooth'})">＋ Agregar producto</button></div>
+        <div class="card" style="margin-bottom:16px"><div class="card-head"><div><h2>Catálogo de productos</h2><p>Valores ficticios en pesos chilenos (CLP)</p></div><input id="productSearch" class="select" placeholder="Buscar producto..." oninput="filterProducts()" style="max-width:230px"></div>
+          <div class="table-wrap"><table id="productTable"><thead><tr><th>Producto</th><th>Costo unitario</th><th>Precio lista</th><th>Mínimo autorizado*</th><th>Estado</th></tr></thead><tbody>
+            <tr><td><div class="product"><div class="product-icon">⚙</div><div><strong>Manguera hidráulica industrial</strong><small>SKU-MH-001</small></div></div></td><td>$80.000</td><td>$120.000</td><td>$108.000</td><td><span class="status">Activo</span></td></tr>
+            <tr><td><div class="product"><div class="product-icon">⛑</div><div><strong>Casco de seguridad industrial</strong><small>SKU-SEG-014</small></div></div></td><td>$12.000</td><td>$18.500</td><td>$16.650</td><td><span class="status">Activo</span></td></tr>
+            <tr><td><div class="product"><div class="product-icon">⛓</div><div><strong>Conjunto de fijación industrial</strong><small>SKU-FI-032</small></div></div></td><td>$25.000</td><td>$38.000</td><td>$34.200</td><td><span class="status">Activo</span></td></tr>
+          </tbody></table></div>
+          <p style="font-size:11px;margin-top:12px">*El precio mínimo es un ejemplo de política interna, no una recomendación real. Los costos y precios reales deben ser cargados y autorizados por la empresa.</p>
+        </div>
+        <div class="card" id="productForm"><div class="card-head"><div><h2>Agregar producto de demostración</h2><p>El formulario agrega una fila a esta vista local.</p></div></div>
+          <div class="form-grid"><div class="field"><label>Nombre del producto</label><input id="newProduct" placeholder="Ej. Filtro industrial"></div><div class="field"><label>Código SKU</label><input id="newSku" placeholder="Ej. FIL-001"></div><div class="field"><label>Costo unitario (CLP)</label><input id="newCost" type="number" min="0" placeholder="80000"></div><div class="field"><label>Precio de lista (CLP)</label><input id="newPrice" type="number" min="0" placeholder="120000"></div></div>
+          <button class="btn primary" onclick="addProduct()">Guardar producto demo</button>
+        </div>
+      </section>
+
+      <section class="page" id="negociacion">
+        <div class="heading"><div><div class="eyebrow">Herramienta del vendedor</div><h1>Simulador de negociación</h1><p>Evalúa precios, descuentos y margen antes de preparar una oferta.</p></div><span class="pill">Reglas ilustrativas</span></div>
+        <div class="two-col">
+          <div class="card"><div class="card-head"><div><h2>Configurar cotización</h2><p>Modifica los valores para explorar escenarios.</p></div></div>
+            <div class="field"><label>Producto</label><select id="dealProduct" onchange="updateDeal()"><option value="120000|80000|108000">Manguera hidráulica industrial</option><option value="18500|12000|16650">Casco de seguridad industrial</option><option value="38000|25000|34200">Conjunto de fijación industrial</option></select></div>
+            <div class="form-grid"><div class="field"><label>Precio unitario ofrecido (CLP)</label><input type="number" id="dealPrice" value="114000" min="0" oninput="updateDeal()"></div><div class="field"><label>Cantidad</label><input type="number" id="dealQty" value="10" min="1" oninput="updateDeal()"></div></div>
+            <div class="field"><label>Tipo de cliente</label><select id="dealClient"><option>Cliente recurrente</option><option>Cliente nuevo</option><option>Cuenta estratégica</option></select></div>
+            <div class="field"><label>Contexto de la negociación</label><select id="dealReason"><option>Solicita descuento</option><option>Compara con otro proveedor</option><option>Compra por volumen</option><option>Necesita una respuesta urgente</option></select></div>
+            <button class="btn primary" onclick="updateDeal();notify('Cálculo actualizado con los valores de demostración.')">Calcular escenario</button>
+          </div>
+          <div class="card"><div class="card-head"><div><h2>Resultado de la negociación</h2><p>Estimación para apoyar la decisión</p></div></div>
+            <div class="result-box"><div class="result-line"><span>Precio de lista unitario</span><strong id="listPrice">$120.000</strong></div><div class="result-line"><span>Descuento aplicado</span><strong id="discount">5,0%</strong></div><div class="result-line"><span>Margen bruto unitario</span><strong id="unitMargin">$34.000</strong></div><div class="result-line"><span>Margen bruto estimado total</span><strong id="totalMargin">$340.000</strong></div><div class="result-line"><span>Margen sobre venta</span><strong id="marginPct">29,8%</strong></div></div>
+            <div id="dealStatus" class="callout">✓ Dentro del rango ilustrativo configurado.</div>
+            <div class="footer-note">El margen mostrado no descuenta fletes, comisiones, impuestos ni costos indirectos. La política real debe ser definida por la gerencia.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="ventas">
+        <div class="heading"><div><div class="eyebrow">Actividad comercial</div><h1>Ventas y cotizaciones</h1><p>Registra oportunidades y sigue su avance hasta el cierre.</p></div><button class="btn primary" onclick="document.getElementById('saleForm').scrollIntoView({behavior:'smooth'})">＋ Nueva oportunidad</button></div>
+        <div class="metrics"><div class="card"><div class="metric-top">Oportunidades abiertas</div><div class="metric-value" id="openCount">26</div><div style="color:var(--muted);font-size:11px">Datos demo + registros locales</div></div><div class="card"><div class="metric-top">Ventas ganadas</div><div class="metric-value" id="wonCount">18</div><div style="color:var(--muted);font-size:11px">En el período de ejemplo</div></div><div class="card"><div class="metric-top">Pipeline estimado</div><div class="metric-value" id="pipeline">$18,4 MM</div><div style="color:var(--muted);font-size:11px">Monto de oportunidades</div></div></div>
+        <div class="card" style="margin-bottom:16px"><div class="card-head"><div><h2>Registro de oportunidades</h2><p>Los registros creados aquí son temporales en esta demostración.</p></div></div><div class="table-wrap"><table id="salesTable"><thead><tr><th>Cliente</th><th>Vendedor</th><th>Monto CLP</th><th>Estado</th><th>Próximo paso</th></tr></thead><tbody>
+          <tr><td>Minera Los Andes</td><td>Camila R.</td><td>$4.850.000</td><td><span class="status warn">En negociación</span></td><td>Revisar precio</td></tr><tr><td>Mantenciones del Norte</td><td>Diego M.</td><td>$2.120.000</td><td><span class="status blue">Seguimiento</span></td><td>Llamar al cliente</td></tr><tr><td>Industrias Cordillera</td><td>Andrés P.</td><td>$980.000</td><td><span class="status">Ganada</span></td><td>Coordinar pedido</td></tr>
+        </tbody></table></div></div>
+        <div class="card" id="saleForm"><div class="card-head"><div><h2>Registrar oportunidad</h2><p>Formulario demostrativo.</p></div></div><div class="form-grid"><div class="field"><label>Nombre del cliente</label><input id="saleClient" placeholder="Empresa cliente"></div><div class="field"><label>Vendedor responsable</label><input id="saleSeller" placeholder="Nombre del vendedor"></div><div class="field"><label>Monto estimado (CLP)</label><input id="saleAmount" type="number" min="0" placeholder="1500000"></div><div class="field"><label>Estado</label><select id="saleStatus"><option>Seguimiento</option><option>En negociación</option><option>Ganada</option><option>Perdida</option></select></div><div class="field" style="grid-column:1/-1"><label>Próximo paso</label><input id="saleNext" placeholder="Ej. Enviar cotización el viernes"></div></div><button class="btn primary" onclick="addSale()">Guardar oportunidad demo</button></div>
+      </section>
+
+      <section class="page" id="entrenamiento">
+        <div class="heading"><div><div class="eyebrow">Academia comercial</div><h1>Entrenamiento de ventas con IA</h1><p>Practica conversaciones difíciles antes de hablar con un cliente real.</p></div><span class="pill">Simulación guiada</span></div>
+        <div class="two-col">
+          <div class="card"><div class="card-head"><div><h2>Escenario de práctica</h2><p>Cliente ficticio · Sector minería</p></div><span class="status blue">Intermedio</span></div>
+            <div class="callout" style="margin-bottom:18px"><b>Contexto:</b> el cliente tiene un proveedor habitual, considera que tu oferta es más cara y no ve razones para cambiar. Tu objetivo es descubrir sus prioridades y conseguir un siguiente paso comercial.</div>
+            <div class="chat" id="chat"><div class="bubble client"><small>JEFE DE ABASTECIMIENTO</small>Mira, llevamos años trabajando con nuestro proveedor actual y nunca hemos tenido mayores problemas. Ustedes son más caros. ¿Por qué debería comprarles?</div></div>
+            <form class="chat-input" id="chatForm"><input id="chatReply" placeholder="Escribe tu respuesta como vendedor..." autocomplete="off"><button class="btn primary" type="submit">Responder</button></form>
+            <p style="font-size:11px;margin-top:10px">Demo local: el cliente responde con reglas sencillas, no con una IA conectada.</p>
+          </div>
+          <div class="card"><div class="card-head"><div><h2>Rúbrica de evaluación</h2><p>Ejemplo de cómo podría evaluarte el sistema</p></div></div>
+            <div class="score-row"><span>Preguntas de diagnóstico</span><div class="score-track"><i id="score1" style="width:20%"></i></div><b id="scoreN1">2/10</b></div>
+            <div class="score-row"><span>Escucha y empatía</span><div class="score-track"><i id="score2" style="width:50%"></i></div><b id="scoreN2">5/10</b></div>
+            <div class="score-row"><span>Propuesta de valor</span><div class="score-track"><i id="score3" style="width:40%"></i></div><b id="scoreN3">4/10</b></div>
+            <div class="score-row"><span>Manejo de objeciones</span><div class="score-track"><i id="score4" style="width:40%"></i></div><b id="scoreN4">4/10</b></div>
+            <div class="result-box"><strong id="coachTitle">Consejo del entrenador</strong><p id="coachText" style="margin-top:7px;font-size:12px">No defiendas el precio de inmediato. Primero pregunta qué valora el cliente de su proveedor actual y si hay algo que le gustaría mejorar.</p></div>
+            <button class="btn" onclick="resetChat()">Reiniciar simulación</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="kpi">
+        <div class="heading"><div><div class="eyebrow">Analítica comercial</div><h1>KPI y rendimiento</h1><p>Indicadores para detectar oportunidades de mejora y orientar al equipo.</p></div><span class="pill">Datos ficticios</span></div>
+        <div class="metrics"><div class="card"><div class="metric-top">Ticket promedio</div><div class="metric-value">$1,82 MM</div><div class="trend">↑ 6,4% <span>vs. período anterior</span></div></div><div class="card"><div class="metric-top">Descuento promedio</div><div class="metric-value">5,8%</div><div style="font-size:11px;color:var(--muted)">Sobre precio de lista</div></div><div class="card"><div class="metric-top">Ciclo de venta</div><div class="metric-value">18 días</div><div class="trend">↓ 2 días <span>vs. período anterior</span></div></div><div class="card"><div class="metric-top">Tasa de recompra</div><div class="metric-value">62%</div><div style="font-size:11px;color:var(--muted)">Clientes del período</div></div></div>
+        <div class="grid-main"><div class="card"><div class="card-head"><div><h2>Conversión por vendedor</h2><p>Cotizaciones ganadas / cotizaciones cerradas</p></div></div>
+          <div class="progress-row"><div class="progress-label"><span>Camila R.</span><span>42%</span></div><div class="progress"><span style="width:42%;background:var(--blue)"></span></div></div><div class="progress-row"><div class="progress-label"><span>Diego M.</span><span>38%</span></div><div class="progress"><span style="width:38%;background:var(--cyan)"></span></div></div><div class="progress-row"><div class="progress-label"><span>Andrés P.</span><span>31%</span></div><div class="progress"><span style="width:31%;background:#b99bff"></span></div></div><div class="progress-row"><div class="progress-label"><span>Valentina S.</span><span>27%</span></div><div class="progress"><span style="width:27%;background:var(--yellow)"></span></div></div>
+        </div><div class="card"><div class="card-head"><div><h2>Indicadores recomendados</h2><p>Qué conviene monitorear</p></div></div><div class="activity"><div class="activity-item"><div class="activity-symbol">↗</div><div><strong>Margen bruto por producto</strong><small>Evita evaluar solo por facturación.</small></div></div><div class="activity-item"><div class="activity-symbol">%</div><div><strong>Descuento por vendedor</strong><small>Detecta patrones de negociación.</small></div></div><div class="activity-item"><div class="activity-symbol">◎</div><div><strong>Motivos de pérdida</strong><small>Precio, plazo, stock, competencia u otros.</small></div></div><div class="activity-item"><div class="activity-symbol">↻</div><div><strong>Recompra y seguimiento</strong><small>Ayuda a cuidar las relaciones comerciales.</small></div></div></div></div></div>
+        <div class="callout">Importante: los KPI deben compararse considerando cartera, tipo de cliente, productos y territorio. Una métrica aislada no explica todo el desempeño de un vendedor.</div>
+      </section>
+    </div>
+  </main>
+</div>
+<div id="toast" class="toast"></div>
+<script>
+const pageNames={dashboard:"Dashboard",productos:"Productos y precios",negociacion:"Simulador de precios",ventas:"Ventas y cotizaciones",entrenamiento:"Entrenamiento IA",kpi:"KPI y rendimiento"};
+function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===id));document.getElementById('crumb').textContent=pageNames[id]||id;window.scrollTo({top:0,behavior:'smooth'})}
+document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));
+let toastTimer;function notify(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.style.display='none',3200)}
+const clp=n=>'$'+Math.round(n||0).toLocaleString('es-CL');
+function updateDeal(){const [list,cost,min]=document.getElementById('dealProduct').value.split('|').map(Number);const price=Math.max(0,Number(document.getElementById('dealPrice').value)||0);const qty=Math.max(0,Number(document.getElementById('dealQty').value)||0);const discount=list?Math.max(0,(list-price)/list*100):0;const unit=price-cost;document.getElementById('listPrice').textContent=clp(list);document.getElementById('discount').textContent=discount.toLocaleString('es-CL',{maximumFractionDigits:1})+'%';document.getElementById('unitMargin').textContent=clp(unit);document.getElementById('totalMargin').textContent=clp(unit*qty);document.getElementById('marginPct').textContent=(price>0?unit/price*100:0).toLocaleString('es-CL',{maximumFractionDigits:1})+'%';const box=document.getElementById('dealStatus');if(price<min){box.style.borderColor='#7b5830';box.style.background='#2c2419';box.style.color='#f4c66b';box.textContent='⚠ Requiere autorización: el precio está bajo el mínimo ilustrativo configurado.'}else if(price<list*.95){box.style.borderColor='#31516b';box.style.background='#142638';box.style.color='#b8dfff';box.textContent='↗ Dentro del rango de negociación ilustrativo. Revisa el contexto y la rentabilidad.'}else{box.style.borderColor='#285b55';box.style.background='#173a38';box.style.color='#a9f1dc';box.textContent='✓ Precio objetivo o cercano al precio de lista.'}}
+document.getElementById('dealProduct').addEventListener('change',()=>{const [list,cost,min]=document.getElementById('dealProduct').value.split('|').map(Number);document.getElementById('dealPrice').value=Math.round(list*.95);updateDeal()});updateDeal();
+function addProduct(){const name=document.getElementById('newProduct').value.trim(),sku=document.getElementById('newSku').value.trim(),cost=Number(document.getElementById('newCost').value),price=Number(document.getElementById('newPrice').value);if(!name||!sku||cost<0||price<=0||!Number.isFinite(cost)||!Number.isFinite(price)){notify('Completa nombre, SKU, costo y precio válido.');return}const min=Math.max(cost,price*.9);const tr=document.createElement('tr');tr.innerHTML='<td><div class="product"><div class="product-icon">◇</div><div><strong></strong><small></small></div></div></td><td></td><td></td><td></td><td><span class="status blue">Demo</span></td>';tr.querySelector('strong').textContent=name;tr.querySelector('small').textContent=sku;tr.children[1].textContent=clp(cost);tr.children[2].textContent=clp(price);tr.children[3].textContent=clp(min);document.querySelector('#productTable tbody').appendChild(tr);['newProduct','newSku','newCost','newPrice'].forEach(id=>document.getElementById(id).value='');notify('Producto agregado a la tabla de demostración.');}
+function filterProducts(){const q=document.getElementById('productSearch').value.toLowerCase();document.querySelectorAll('#productTable tbody tr').forEach(r=>r.style.display=r.textContent.toLowerCase().includes(q)?'':'none')}
+function addSale(){const client=document.getElementById('saleClient').value.trim(),seller=document.getElementById('saleSeller').value.trim(),amount=Number(document.getElementById('saleAmount').value),status=document.getElementById('saleStatus').value,next=document.getElementById('saleNext').value.trim();if(!client||!seller||amount<=0){notify('Ingresa cliente, vendedor y un monto válido.');return}const tr=document.createElement('tr');const vals=[client,seller,clp(amount),status,next||'Por definir'];vals.forEach((v,i)=>{const td=document.createElement('td');if(i===3){const span=document.createElement('span');span.className='status '+(status==='Ganada'?'':status==='Perdida'?' red':status==='Seguimiento'?' blue':' warn');span.textContent=v;td.appendChild(span)}else td.textContent=v;tr.appendChild(td)});document.querySelector('#salesTable tbody').appendChild(tr);['saleClient','saleSeller','saleAmount','saleNext'].forEach(id=>document.getElementById(id).value='');notify('Oportunidad agregada a la tabla de demostración.');}
+let turn=0;function resetChat(){turn=0;document.getElementById('chat').innerHTML='<div class="bubble client"><small>JEFE DE ABASTECIMIENTO</small>Mira, llevamos años trabajando con nuestro proveedor actual y nunca hemos tenido mayores problemas. Ustedes son más caros. ¿Por qué debería comprarles?</div>';setScores([2,5,4,4]);document.getElementById('coachTitle').textContent='Consejo del entrenador';document.getElementById('coachText').textContent='No defiendas el precio de inmediato. Primero pregunta qué valora el cliente de su proveedor actual y si hay algo que le gustaría mejorar.'}
+function setScores(a){a.forEach((v,i)=>{document.getElementById('score'+(i+1)).style.width=(v*10)+'%';document.getElementById('scoreN'+(i+1)).textContent=v+'/10'})}
+document.getElementById('chatForm').addEventListener('submit',e=>{e.preventDefault();const input=document.getElementById('chatReply'),msg=input.value.trim();if(!msg)return;const chat=document.getElementById('chat');const seller=document.createElement('div');seller.className='bubble seller';const small=document.createElement('small');small.textContent='TU RESPUESTA';seller.appendChild(small);seller.appendChild(document.createTextNode(msg));chat.appendChild(seller);turn++;const lower=msg.toLowerCase();let response,scores=[3,5,4,4],title='Buen intento: ahora profundiza',tip='Intenta hacer una pregunta abierta para conocer la necesidad del cliente y evita asegurar ventajas que no has confirmado.';const hasQuestion=msg.includes('?')||/qué|como|cómo|cuál|cuanto|cuánto|por qué|cuáles/.test(lower);const empathy=/entiendo|comprendo|razonable|claro/.test(lower);const value=/fiab|servicio|respuesta|calidad|valor|plazo|entrega|soporte/.test(lower);if(hasQuestion){scores[0]=8;response='Es una buena pregunta. Para nosotros lo importante es que el proveedor responda cuando lo necesitamos. ¿Qué podrías ofrecerme que realmente marque una diferencia?';title='Buena apertura';tip='Escucha la respuesta y conecta tu propuesta con una necesidad real. No supongas que existe un problema con el proveedor actual.'}else{response='Entiendo, pero como te comenté, estamos bien con nuestro proveedor. No veo todavía una razón concreta para cambiar. ¿Qué diferencia real podrías ofrecerme?';}if(empathy)scores[1]=8;if(value)scores[2]=6;if(hasQuestion&&value){scores[2]=7;scores[3]=7;title='Buena combinación';tip='Has empezado a explorar la necesidad y a presentar valor. El siguiente paso es comprobar qué aspecto es más importante para el cliente y acordar una acción concreta.'}if(/descuento|bajar|rebaja|precio menor/.test(lower)){scores[3]=3;tip='Evita ofrecer un descuento antes de comprender qué necesita el cliente. Si negocias precio, evalúa margen, volumen y las políticas de autorización.'}const client=document.createElement('div');client.className='bubble client';const label=document.createElement('small');label.textContent='JEFE DE ABASTECIMIENTO';client.appendChild(label);client.appendChild(document.createTextNode(response));chat.appendChild(client);chat.scrollTop=chat.scrollHeight;setScores(scores);document.getElementById('coachTitle').textContent=title;document.getElementById('coachText').textContent=tip;input.value='';});
+</script>
+</body>
+</html>
