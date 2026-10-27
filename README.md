@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
@@ -30,3 +31,14 @@ If you are developing a production application, we recommend enabling type-aware
 ```
 
 See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+=======
+# forgesales
+SALE SIMULATOR
+>>>>>>> 635b3685560a8846ce6917edf2146d4b7e97bce7
+
+
+# Forgesales
+
+SALE SIMULATOR
+
+Prototipo de un sistema para simular ventas y apoyar la capacitación de vendedores.
